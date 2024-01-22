@@ -42,8 +42,8 @@
     4. **오브젝트 파일** 컴파일 후 생성된 obj 파일의 경우 기계 언어에 해당함.o
     5. **시동코드**: obj 등 프로세스에서 작동시키기 위해서는 시동코드가 필요하다. 보통은 OS(Window, liunx)에서 지원을 하지만 OS가 없는 bare metal 환경에서는 시동코드까지 직접 개발자가 작성해야 한다.
     
-![https://www.tcpschool.com/lectures/img_c_programming.png]
-.(https://www.tcpschool.com/lectures/img_c_programming.png)
+    ![https://www.tcpschool.com/lectures/img_c_programming.png](https://www.tcpschool.com/lectures/img_c_programming.png)
+    
 
 참고: [https://www.tcpschool.com/c/c_intro_programming](https://www.tcpschool.com/c/c_intro_programming)
 
