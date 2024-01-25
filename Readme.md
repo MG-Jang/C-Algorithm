@@ -14,6 +14,10 @@
     - 포인터
     - 스택프레임(stack frame)
     - 문자와 문자열
+    - 구조체
+    - 매크로 함수& 입출력
+    - 조건부 컴파일
+    - 비트연산
 
 (참고: 내용이 많은 부분은 따로 페이지를 작성했습니다.)
 
@@ -178,8 +182,133 @@ malloc 또는 colloc 앞에 (int*) 과 같이 포인터 자료형 선언 신경�
 
 [문자 문자열](https://www.notion.so/1ca56fd3731846f7a4e29e9e8c942f0b?pvs=21)
 
-### 구조체
+## 구조체
 
 [구조체](https://www.notion.so/682217ba65f64c478a19e8d885bbe25c?pvs=21)
 
-출처:[https://www.tcpschool.com/c](https://www.tcpschool.com/c/c_function_variableScope)
+### 메크로 함수 & 입출력
+
+출처: [https://www.tcpschool.com/c/c_prepro_macroFunc](https://www.tcpschool.com/c/c_prepro_macroFunc)
+
+한번 읽어만 보자.
+
+- 미리지정된 매크로 Predefined macro
+
+Pre macro같은 경우 C언어에서 제공하고 있기 때문에 사용자가 재정의는 불가능
+
+| Pre macro | 설명 |
+| --- | --- |
+| __DATE__ | 선행처리가 수행된 날짜를 "Mmm dd yyyy"형식으로 나타낸 문자열 |
+| —TIME— | 선행처리가 수행된 시간을 "hh:mm:ss"형식으로 나타낸 문자열 |
+| —FILE— | 현재 소스 파일의 이름을 나타내는 문자열 |
+
+```c
+int main(void){
+    printf("선행처리가 수행된 날짜는 %s입니다.\n", __DATE__);
+    printf("선행처리가 수행된 시간은 %s입니다.\n", __TIME__);
+    printf("현재 소스 파일에서 처리중인 라인 번호는 %d입니다.\n", __LINE__);
+    printf("__STDC__ : %d\n", __STDC__);
+    printf("__STDC_HOSTED__ : %d\n", __STDC_HOSTED__);
+    printf("__FUNCTION__ : %s\n", __FUNCTION__);
+	
+    return 0;}
+```
+
+```c
+선행처리가 수행된 날짜는 Jan 24 2024입니다.
+선행처리가 수행된 시간은 05:51:07입니다.
+현재 소스 파일에서 처리중인 라인 번호는 6입니다.
+__STDC__ : 1
+__STDC_HOSTED__ : 1
+__FUNCTION__ : main  //가장 많이 사용하는 함수. 어떤 함수에서 쓰였는지 확인
+```
+
+- 참고: #define의 경우 자료형을 선언하지 않는데 알아서 가장 적당한 자료형을 선언해주는 것으로 확인 (단 실수면 크기와 상관없이 double 부터 시작하는 것으로 예상)
+
+ex) #define PI 3.14 하면 8byte의 double. 3 을 넣으면 4byte의 int 형 선언.
+
+### 조건부 컴파일
+
+if 문과 매우 유사하다. preprocess(#)을 앞에 붙여서 진행되는 방식
+
+단 여기서 모든 조건은 define과 연관 있다. 정의된 함수의 조건 여부를 묻는 것이기에 전역변수나 지역변수로 선언된 변수와는 상관없다
+
+| 지시자  | 용도 |
+| --- | --- |
+| if | 조건식 |
+| ifdef | define 되었는지 |
+| ifdef | define not 인지 |
+| enif | 조건부 컴파일 종료 |
+
+```c
+#define COND 2
+
+int main(void){	
+	//int COND = 1; //만약 위 define을 주석 처리 후 실행해도 어떠한 조건문에도 해당되지 않음
+// 정의 뿐만 아니라 값까지 확인
+	#if COND == 1
+		puts("매크로 상수 COND가 선언되어 있으며, 그 값은 1입니다.");
+	#elif COND == 2
+		puts("매크로 상수 COND가 선언되어 있으며, 그 값은 2입니다.");
+	#endif
+// 정의 여부만 확인
+	#ifdef COND
+		printf("COND 선언됨\n");
+	#else // else 대신 ifndef를 사용해도 동일
+		puts("COND 선언 안됨\n");
+	#endif 
+	return 0;
+}
+```
+
+```c
+매크로 상수 COND가 선언되어 있으며, 그 값은 2입니다.
+COND 선언됨
+```
+
+### 비트연산
+
+비트 연산자: OR, AND , XOR 등등…
+
+비트 시프트: >> , <<
+
+>> : 오른쪽으로 1비트씩 이동 빈공간은 1로 채움
+
+<<: 왼쪽으로 1비트씩 이동 빈공간은 0으로 채움
+
+비트 시프트 연산을 할경우 MSB에 저장되어있는 sign(부호)의 경우 건들지 않는다.(대부분의 시스템에서, 예외도 있다.)
+
+### 음수 표현법
+
+**1의 보수: 양수 값에서 NOT을 진행**
+
+```c
+양수: 0001: 1
+음수: 1110:-1
+```
+
+- 장점: not 연산만으로 가능하다.
+- 단점: -0 , +0 이동시에 존재
+
+**2의 보수:  1의 보수에서 1을 더한다.**
+
+(1의 보수 후 1을 더한다.)
+
+```c
+양수: 0001: 1
+음수: 1111:-1
+```
+
+1의 보수의 단점인 0이 두개 존재하는 것이 사라진다.
+
+소수의 방식:
+
+- 고정 소수점:
+
+![https://www.tcpschool.com/lectures/img_c_fixed_point.png](https://www.tcpschool.com/lectures/img_c_fixed_point.png)
+
+- 부동 소수점
+
+![https://www.tcpschool.com/lectures/img_c_floating_point_32.png](https://www.tcpschool.com/lectures/img_c_floating_point_32.png)
+
+자료 출처:[https://www.tcpschool.com/c](https://www.tcpschool.com/c/c_function_variableScope)
